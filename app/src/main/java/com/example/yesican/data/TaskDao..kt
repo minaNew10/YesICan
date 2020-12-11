@@ -2,7 +2,6 @@ package com.example.yesican.data;
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.yesican.ui.tasks.SortOrder
 import kotlinx.coroutines.flow.Flow
 
 @Dao
