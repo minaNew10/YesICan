@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.yesican.R
 import com.example.yesican.data.SortOrder
+import com.example.yesican.data.Task
 import com.example.yesican.databinding.FragmentTasksBinding
 import com.example.yesican.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
@@ -19,14 +20,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class TasksFragment :Fragment(R.layout.fragment_tasks){
+class TasksFragment :Fragment(R.layout.fragment_tasks),TasksAdapter.OnItemClickListener{
     private  val viewModel : TasksViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //here we don't call inflate because the layout is already inflated in the constructor
         val binding = FragmentTasksBinding.bind(view)
-        val tasksAdapter = TasksAdapter()
+        val tasksAdapter = TasksAdapter(this)
         binding.apply {
             recyclerViewTasks.apply {
                 adapter = tasksAdapter
@@ -39,6 +40,14 @@ class TasksFragment :Fragment(R.layout.fragment_tasks){
             }
         }
         setHasOptionsMenu(true)
+    }
+
+    override fun onItemClick(task: Task) {
+        viewModel.onTaskSelected(task)
+    }
+
+    override fun onCheckBoxClick(task: Task, isChecked: Boolean) {
+        viewModel.onTaskCheckedChanged(task,isChecked)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

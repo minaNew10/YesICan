@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.yesican.data.PreferencesManager
 import com.example.yesican.data.SortOrder
+import com.example.yesican.data.Task
 
 import com.example.yesican.data.TaskDao
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ class TasksViewModel @ViewModelInject constructor(
     }.flatMapLatest {( query,filterPreferences) ->
         taskDao.getTasks(query,filterPreferences.sortOrder,filterPreferences.hideCompleted)
     }
-
+    val tasks = tasksFlow.asLiveData()
     fun onSortOrderSelected(sortOrder: SortOrder) =
         viewModelScope.launch {
             val res = preferencesManager.updateSortOrder(sortOrder)
@@ -38,7 +39,15 @@ class TasksViewModel @ViewModelInject constructor(
         viewModelScope.launch {
             val res = preferencesManager.updateHideCompleted(hideCompleted)
         }
-    val tasks = tasksFlow.asLiveData()
+    fun onTaskSelected(task:Task){
+
+    }
+
+    fun onTaskCheckedChanged(task: Task, checked: Boolean) = viewModelScope.launch {
+        taskDao.update(task.copy(completed = checked))
+    }
+
+
 }
 
 
